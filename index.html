@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Find Your Soulmate 💘</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --pink-light: #ffe6ee;
+      --pink: #ff6b9d;
+      --pink-deep: #e91e63;
+      --red: #ff1744;
+      --gold: #ffd700;
+      --white: #fff;
+      --dark: #2d1f3d;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1a0a2e 0%, #2d1f3d 40%, #1a0a2e 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--white);
+      position: relative;
+    }
+
+    /* Floating Hearts Background */
+    .hearts-container {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .floating-heart {
+      position: absolute;
+      font-size: 1.5rem;
+      opacity: 0;
+      animation: floatUp linear infinite;
+      color: var(--pink);
+      text-shadow: 0 0 10px var(--pink);
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) rotate(0deg) scale(0.5); opacity: 0; }
+      10% { opacity: 0.7; }
+      90% { opacity: 0.3; }
+      100% { transform: translateY(-10vh) rotate(360deg) scale(1.2); opacity: 0; }
+    }
+
+    /* Stars */
+    .stars-container {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      width: 3px; height: 3px;
+      background: var(--gold);
+      border-radius: 50%;
+      animation: twinkle 2s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.5); }
+    }
+
+    /* Main Container */
+    .container {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* Intro Screen */
+    .intro-screen {
+      text-align: center;
+      animation: fadeIn 1s ease;
+    }
+
+    .intro-screen h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 8vw, 4rem);
+      background: linear-gradient(135deg, var(--pink), var(--gold), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .intro-screen .subtitle {
+      font-size: clamp(1rem, 4vw, 1.3rem);
+      color: var(--pink-light);
+      margin-bottom: 2.5rem;
+      font-weight: 300;
+      opacity: 0.9;
+    }
+
+    .intro-screen .heart-icon {
+      font-size: 4rem;
+      animation: pulse 1.5s ease-in-out infinite;
+      display: block;
+      margin-bottom: 2rem;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+
+    .btn-start {
+      background: linear-gradient(135deg, var(--pink-deep), var(--pink));
+      border: none;
+      color: white;
+      padding: 16px 48px;
+      font-size: 1.1rem;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 30px rgba(233, 30, 99, 0.4);
+      letter-spacing: 1px;
+    }
+
+    .btn-start:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(233, 30, 99, 0.6);
+    }
+
+    .btn-start:active { transform: translateY(0); }
+
+    /* Quiz Section */
+    .quiz-section {
+      display: none;
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+    }
+
+    .quiz-section.active { display: block; }
+
+    .question-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 107, 157, 0.2);
+      border-radius: 24px;
+      padding: clamp(24px, 6vw, 40px);
+      animation: slideIn 0.6s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(60px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .question-number {
+      font-size: 0.85rem;
+      color: var(--pink);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .question-text {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.3rem, 5vw, 1.8rem);
+      margin-bottom: 2rem;
+      color: var(--white);
+      line-height: 1.4;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option-btn {
+      background: rgba(255, 107, 157, 0.1);
+      border: 2px solid rgba(255, 107, 157, 0.3);
+      color: var(--white);
+      padding: 14px 24px;
+      font-size: 1rem;
+      font-family: 'Poppins', sans-serif;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: left;
+    }
+
+    .option-btn:hover, .option-btn:focus {
+      background: rgba(255, 107, 157, 0.25);
+      border-color: var(--pink);
+      transform: translateX(8px);
+      outline: none;
+    }
+
+    .option-btn.selected {
+      background: linear-gradient(135deg, var(--pink-deep), var(--pink));
+      border-color: transparent;
+      transform: scale(1.02);
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      margin-bottom: 2rem;
+    }
+
+    .progress-bar {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--pink), var(--gold));
+      border-radius: 2px;
+      transition: width 0.5s ease;
+    }
+
+    /* Reveal Screen */
+    .reveal-screen {
+      display: none;
+      text-align: center;
+    }
+
+    .reveal-screen.active {
+      display: block;
+      animation: revealIn 1s ease;
+    }
+
+    @keyframes revealIn {
+      0% { opacity: 0; transform: scale(0.5); }
+      50% { transform: scale(1.1); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .reveal-heart {
+      font-size: 5rem;
+      animation: heartbeat 0.8s ease infinite;
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      25% { transform: scale(1.2); }
+      40% { transform: scale(1); }
+      60% { transform: scale(1.15); }
+    }
+
+    .reveal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 7vw, 3rem);
+      background: linear-gradient(135deg, var(--pink), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .reveal-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 10vw, 5rem);
+      font-style: italic;
+      color: var(--pink);
+      text-shadow: 0 0 40px rgba(255, 107, 157, 0.6);
+      margin-bottom: 1.5rem;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 20px rgba(255, 107, 157, 0.4); }
+      to { text-shadow: 0 0 50px rgba(255, 107, 157, 0.8), 0 0 80px rgba(255, 107, 157, 0.4); }
+    }
+
+    .reveal-message {
+      font-size: clamp(0.95rem, 3.5vw, 1.15rem);
+      color: var(--pink-light);
+      line-height: 1.8;
+      max-width: 480px;
+      margin: 0 auto 2rem;
+      font-weight: 300;
+    }
+
+    .reveal-emoji-row {
+      font-size: 2rem;
+      margin-top: 1.5rem;
+      animation: bounce 1s ease infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Confetti-like burst */
+    .burst-container {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .burst {
+      position: absolute;
+      font-size: 1.5rem;
+      animation: burst 1s ease-out forwards;
+      opacity: 0;
+    }
+
+    @keyframes burst {
+      0% { transform: translate(0, 0) scale(0); opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) scale(1); opacity: 0; }
+    }
+
+    /* Hidden */
+    .hidden { display: none !important; }
+
+    /* Fade utilities */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Mobile touch optimizations */
+    @media (max-width: 480px) {
+      .option-btn {
+        padding: 16px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Floating Hearts -->
+<div class="hearts-container" id="heartsContainer"></div>
+
+<!-- Stars -->
+<div class="stars-container" id="starsContainer"></div>
+
+<!-- Burst Container -->
+<div class="burst-container" id="burstContainer"></div>
+
+<div class="container">
+
+  <!-- Intro -->
+  <div class="intro-screen" id="introScreen">
+    <span class="heart-icon">💖</span>
+    <h1>Find Your Soulmate</h1>
+    <p class="subtitle">Answer 3 magical questions and discover<br>who the universe destined just for you...</p>
+    <button class="btn-start" id="btnStart">Begin the Journey ♥</button>
+  </div>
+
+  <!-- Quiz -->
+  <div class="quiz-section" id="quizSection">
+    <div class="progress-container">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+      </div>
+    </div>
+    <div class="question-card" id="questionCard">
+      <p class="question-number" id="questionNumber">Question 1 of 3</p>
+      <h2 class="question-text" id="questionText"></h2>
+      <div class="options" id="optionsContainer"></div>
+    </div>
+  </div>
+
+  <!-- Reveal -->
+  <div class="reveal-screen" id="revealScreen">
+    <span class="reveal-heart">💘</span>
+    <p class="reveal-title">Your Perfect Match Is...</p>
+    <p class="reveal-name">Moonn</p>
+    <p class="reveal-message">
+      Written in the stars, destined by the cosmos,<br>
+      your soulmate is bold, spontaneous, and impossibly charming.<br>
+      He makes ordinary moments extraordinary.<br>
+      <strong style="color: var(--pink);">Go find him. He's worth it. ❣️</strong>
+    </p>
+    <div class="reveal-emoji-row">✨💖✨</div>
+  </div>
+
+</div>
+
+<script>
+  const questions = [
+    {
+      text: "What's your ideal date night?",
+      options: [
+        "Spontaneous road trip to nowhere with bad GPS",
+        "Candlelit dinner that accidentally sets off the smoke alarm",
+        "Dancing until dawn in a place you can't remember the name of",
+        "Surprise adventure that you only find out about in the car"
+      ]
+    },
+    {
+      text: "Pick one quality your soulmate must have:",
+      options: [
+        "Makes you laugh so hard you forget how to breathe",
+        "Knows exactly when you need pizza at 2am",
+        "Never lets you take yourself too seriously",
+        "Makes every boring Tuesday feel like a plot twist"
+      ]
+    },
+    {
+      text: "What makes you instantly fall for someone?",
+      options: [
+        "When they text back 'why' instead of 'lol'",
+        "Spontaneous dance moves in the kitchen",
+        "They argument with you about what to watch, then always cave",
+        "They show up with your favorite snack for no reason"
+      ]
+    }
+  ];
+
+  let currentQuestion = 0;
+  let answered = false;
+
+  // DOM Elements
+  const introScreen = document.getElementById('introScreen');
+  const quizSection = document.getElementById('quizSection');
+  const revealScreen = document.getElementById('revealScreen');
+  const btnStart = document.getElementById('btnStart');
+  const questionCard = document.getElementById('questionCard');
+  const questionNumber = document.getElementById('questionNumber');
+  const questionText = document.getElementById('questionText');
+  const optionsContainer = document.getElementById('optionsContainer');
+  const progressFill = document.getElementById('progressFill');
+  const heartsContainer = document.getElementById('heartsContainer');
+  const starsContainer = document.getElementById('starsContainer');
+  const burstContainer = document.getElementById('burstContainer');
+
+  // Create floating hearts
+  function createFloatingHearts() {
+    const hearts = ['💕', '💗', '💖', '💘', '💝', '❤️', '🩷', '♥️'];
+    for (let i = 0; i < 20; i++) {
+      const heart = document.createElement('div');
+      heart.className = 'floating-heart';
+      heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+      heart.style.left = Math.random() * 100 + '%';
+      heart.style.animationDuration = (Math.random() * 8 + 8) + 's';
+      heart.style.animationDelay = (Math.random() * 10) + 's';
+      heart.style.fontSize = (Math.random() * 1.5 + 0.8) + 'rem';
+      heartsContainer.appendChild(heart);
+    }
+  }
+
+  // Create stars
+  function createStars() {
+    for (let i = 0; i < 50; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.animationDelay = (Math.random() * 3) + 's';
+      star.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
+      starsContainer.appendChild(star);
+    }
+  }
+
+  // Create burst effect
+  function createBurst() {
+    const emojis = ['💖', '💕', '✨', '💘', '🌟', '💗', '🩷', '💝'];
+    for (let i = 0; i < 24; i++) {
+      const el = document.createElement('div');
+      el.className = 'burst';
+      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      const angle = (i / 24) * Math.PI * 2;
+      const distance = 100 + Math.random() * 150;
+      el.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+      el.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
+      el.style.animationDelay = (Math.random() * 0.3) + 's';
+      burstContainer.appendChild(el);
+    }
+    setTimeout(() => { burstContainer.innerHTML = ''; }, 1500);
+  }
+
+  // Load question
+  function loadQuestion() {
+    const q = questions[currentQuestion];
+    questionNumber.textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+    questionText.textContent = q.text;
+    progressFill.style.width = ((currentQuestion) / questions.length * 100) + '%';
+
+    optionsContainer.innerHTML = '';
+    q.options.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.textContent = opt;
+      btn.addEventListener('click', () => selectOption(btn));
+      optionsContainer.appendChild(btn);
+    });
+
+    // Animate card
+    questionCard.style.animation = 'none';
+    questionCard.offsetHeight; // trigger reflow
+    questionCard.style.animation = 'slideIn 0.6s ease';
+    answered = false;
+  }
+
+  function selectOption(btn) {
+    if (answered) return;
+    answered = true;
+
+    // Remove selected from all
+    document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+
+    setTimeout(() => {
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        loadQuestion();
+      } else {
+        showReveal();
+      }
+    }, 800);
+  }
+
+  function showReveal() {
+    quizSection.classList.remove('active');
+    progressFill.style.width = '100%';
+
+    setTimeout(() => {
+      revealScreen.classList.add('active');
+      createBurst();
+    }, 400);
+  }
+
+  // Start
+  btnStart.addEventListener('click', () => {
+    introScreen.style.animation = 'fadeIn 0.5s ease reverse';
+    setTimeout(() => {
+      introScreen.classList.add('hidden');
+      quizSection.classList.add('active');
+      loadQuestion();
+    }, 500);
+  });
+
+  // Init
+  createFloatingHearts();
+  createStars();
+
+  console.log('Soulmate quiz loaded! ✨ — Moonn is waiting for you 💖');
+</script>
+
+</body>
+</html>
